@@ -12,7 +12,10 @@ and write out a new video file."
 
 3. VGG16 - the model requires the images to be RGB and resized to 224*224.
 This model is straightforward and used in a couple online transfer learning 
-tutorials for integrated feature extraction.  
+tutorials for integrated feature extraction. This is for still-images. 
+However, we are moving on to...  
+
+4. I3D, I3D-nonlocal, SlowFast - input videos and returns features.
 
 ## Installation  
 
@@ -20,15 +23,17 @@ For face_recognition, you need to run from Linux. If you are using a windows
 machine, install WSL 2. From there, run the commands:  
 
 Make sure you have cmake  
-'cmake --version'  
+`cmake --version`  
 If not, do  
-'sudo snap install cmake'  
+`sudo snap install cmake`  
 Finally, install face_recognition  
-'pip3 install face_recognition'  
+`pip3 install face_recognition`  
   
 For DeepFace, do:  
-'pip3 install deepface'  
+`pip3 install deepface`  
   
 For VGG16 do:  
-'pip3 install tensorflow  
-pip3 install keras'
+~~~~
+pip3 install tensorflow  
+pip3 install keras  
+~~~~
