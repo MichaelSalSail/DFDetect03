@@ -1,0 +1,7 @@
+The data used for this project is hosted on kaggle at this link: https://www.kaggle.com/c/deepfake-detection-challenge/data
+To add the data, scroll down to the sample data by clicking the download all button
+This will download a .zip file roughly 4 GB in size
+Next create a directory named 'data'
+Note: casing is important
+Unzip the downloaded .zip file (deepfake-detection-challenge) into the newly created folder
+The .gitignore file is configured to ignore that file and its contents since individual videos exceed GitHub's file size limit
