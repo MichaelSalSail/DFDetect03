@@ -123,7 +123,7 @@ def detect_beard(image_dir):
         image_dir: directory of input image.
         
     Returns:
-        None
+        The strings of age and gender.
     '''
     obj = DeepFace.analyze(img_path = image_dir, 
                            actions = ['age', 'gender'],
@@ -132,6 +132,9 @@ def detect_beard(image_dir):
     print("Gender:", obj["gender"])
     if (obj["age"]>=20 and obj["gender"]=='Man'):
         print("There appears to be an adult male. Beards are hard to deepfake.")
+    result1=obj["age"]
+    result2=obj["gender"]
+    return result1, result2
 
 def detect_shades(image_dir):
     '''
@@ -143,7 +146,7 @@ def detect_shades(image_dir):
         image_dir: directory of input image.
     
     Returns:
-        None
+        probability that shades are present in the image.
     '''
     # resizes an image to required VGG16 dimensions.
     image = load_img(image_dir, target_size=(224, 224))
@@ -161,13 +164,17 @@ def detect_shades(image_dir):
     label = decode_predictions(yhat)
     # print the top 5 highest probabilities
     print('Top 5 Object Detection Predictions')
-    print('%s (%.2f%%)' % (label[0][0][1], label[0][0][2]*100))
-    print('%s (%.2f%%)' % (label[0][1][1], label[0][1][2]*100))
-    print('%s (%.2f%%)' % (label[0][2][1], label[0][2][2]*100))
-    print('%s (%.2f%%)' % (label[0][3][1], label[0][3][2]*100))
-    print('%s (%.2f%%)' % (label[0][4][1], label[0][4][2]*100))
-    # label 'n04356056' is 'sunglasses, dark glasses, shades'
-    if(label[0][0][0]=='n04356056' or label[0][1][0]=='n04356056'\
-       or label[0][2][0]=='n04356056' or label[0][3][0]=='n04356056'\
-       or label[0][4][0]=='n04356056'):
+    result=0
+    top_5_shades=False
+    for i in range(0,5):
+        print('%s (%.2f%%)' % (label[0][i][1], label[0][i][2]*100))
+        # label 'n04356056' is 'sunglasses, dark glasses, shades'
+        if (label[0][i][0]=='n04356056'):
+            top_5_shades=True
+            temp=label[0][i][2]*100
+            result=round(temp,2)
+    if (top_5_shades==True):
         print("There appears to be sunglasses. Larger glasses are hard to deepfake.")
+    else:
+        print("No sunglasses detected.")
+    return result
