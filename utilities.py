@@ -1,4 +1,6 @@
+import cv2
 import os
+import time
 import numpy as np
 import face_recognition
 from deepface import DeepFace
@@ -13,6 +15,27 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import Flatten
 
+def save_frame(video_path, output_dir=""):
+    '''
+    Saves the first frame of the video in the output_dir.
+    
+    Args:
+        video_path: path of the video including the video name.
+        output_dir: path to save the frame, optional parameter.
+    
+    Returns:
+        full directory of the saved image.
+    '''
+    # creating a video capture object
+    video_object = cv2.VideoCapture(video_path)
+
+    # get the first frame of the video
+    ret,frame = video_object.read()
+
+    # save
+    result=output_dir+"/"+"test_shades.png"
+    cv2.imwrite(result, frame)
+    return result
 
 def images_ready(all_imgs,folder_name):
     '''
@@ -107,13 +130,17 @@ def save_crop(input_image, file_name, destination):
     '''
     full_1=destination+file_name
     full_2=destination+input_image
-    input_image=face_recognition.load_image_file(full_2)
-    locations = face_recognition.face_locations(input_image)
+    load_image=face_recognition.load_image_file(full_2)
+    locations = face_recognition.face_locations(load_image)
+    if(locations==[]):
+        return False
     for x in locations:
         top, right, bottom, left = x
-        face_image = input_image[top:bottom, left:right]
+        face_image = load_image[top:bottom, left:right]
         pil_image = Image.fromarray(face_image)
         pil_image.save(full_1)
+    # time.sleep(30)
+    return True
 
 def detect_beard(image_dir):
     '''
@@ -125,7 +152,22 @@ def detect_beard(image_dir):
     Returns:
         The strings of age and gender.
     '''
-    obj = DeepFace.analyze(img_path = image_dir, 
+    
+    # Read image
+    img2 = cv2.imread(image_dir)
+
+    # DeepFace expects a 152 by 152 sized image as input
+    dimensions=(152,152)
+    resized=cv2.resize(img2, dimensions)
+
+    # Save this image to a temporary directory for later input to DeepFace
+    cwd = os.getcwd()
+    img2_path = cwd + "/eyeblink data labels/data/temp/beard.png"
+
+    # Save image
+    cv2.imwrite(img2_path, resized)
+    
+    obj = DeepFace.analyze(img_path = img2_path, 
                            actions = ['age', 'gender'],
                            enforce_detection=False)
     print("   Age:", obj["age"])
